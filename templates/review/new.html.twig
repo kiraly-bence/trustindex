@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vélemény beküldése{% endblock %}
+
+{% block body %}
+    {% for message in app.flashes('success') %}
+        <div class="flash-success">{{ message }}</div>
+    {% endfor %}
+
+    {{ form(form) }}
+{% endblock %}

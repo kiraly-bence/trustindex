@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cégek{% endblock %}
+
+{% block body %}
+<div class="container py-5" style="max-width: 760px;">
+
+    <a href="{{ path('review_index') }}" class="btn btn-outline-secondary btn-sm mb-4">&larr; Vissza</a>
+
+    <h2 class="mb-4">Cégek</h2>
+
+    <form method="get" action="{{ path('company_index') }}" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Keresés cég neve alapján…" value="{{ search }}">
+            <button class="btn btn-primary" type="submit">Keresés</button>
+            {% if search %}
+                <a href="{{ path('company_index') }}" class="btn btn-outline-secondary">Törlés</a>
+            {% endif %}
+        </div>
+    </form>
+
+    {% if companies is empty %}
+        <p class="text-muted">Még nincs értékelt cég.</p>
+    {% else %}
+        <div class="card shadow-sm">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Cég neve</th>
+                        <th class="text-center">Értékelések száma</th>
+                        <th class="text-center">Átlagos értékelés</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for company in companies %}
+                        <tr>
+                            <td class="fw-semibold align-middle">{{ company.companyName }}</td>
+                            <td class="text-center align-middle">{{ company.reviewCount }}</td>
+                            <td class="text-center align-middle">
+                                <span style="color: #f5a623; font-size: 1.1rem; letter-spacing: 2px;">
+                                    {% for i in 1..5 %}
+                                        {% if i <= company.avgRating|round %}
+                                            ★
+                                        {% else %}
+                                            <span style="color: #ddd;">★</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
+                                <small class="text-muted ms-1">{{ company.avgRating|number_format(1) }}</small>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(companies) }}
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

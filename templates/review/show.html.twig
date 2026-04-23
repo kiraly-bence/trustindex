@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ review.companyName }} – Vélemény{% endblock %}
+
+{% block body %}
+<div class="container py-5" style="max-width: 760px;">
+
+    <a href="{{ path('review_index') }}" class="btn btn-outline-secondary btn-sm mb-4">&larr; Vissza</a>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h2 class="card-title mb-0">{{ review.companyName }}</h2>
+                <small class="text-muted pt-1">{{ review.createdAt|date('Y. m. d.') }}</small>
+            </div>
+
+            <div class="mb-3" style="color: #f5a623; font-size: 1.4rem; letter-spacing: 3px;">
+                {% for i in 1..5 %}
+                    {% if i <= review.rating %}
+                        ★
+                    {% else %}
+                        <span style="color: #ddd;">★</span>
+                    {% endif %}
+                {% endfor %}
+                <span class="text-muted fs-6 ms-2">{{ review.rating }}/5</span>
+            </div>
+
+            <p class="card-text text-secondary" style="white-space: pre-line;">{{ review.reviewText }}</p>
+
+            <hr>
+
+            <small class="text-muted">Beküldő: {{ review.authorEmail }}</small>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vélemények{% endblock %}
+
+{% block body %}
+<div class="container py-5" style="max-width: 760px;">
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+
+    <div class="card shadow-sm mb-5">
+        <div class="card-body">
+            <h2 class="card-title mb-4">Vélemény beküldése</h2>
+            {{ form_start(form) }}
+                <div class="mb-3">
+                    {{ form_label(form.companyName, 'Cég neve', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.companyName, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.companyName) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(form.rating, 'Értékelés (1–5)', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.rating, {'attr': {'class': 'form-control', 'min': 1, 'max': 5}}) }}
+                    {{ form_errors(form.rating) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(form.reviewText, 'Vélemény', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.reviewText, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+                    {{ form_errors(form.reviewText) }}
+                </div>
+                <div class="mb-4">
+                    {{ form_label(form.authorEmail, 'E-mail cím', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.authorEmail, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.authorEmail) }}
+                </div>
+                <button type="submit" class="btn btn-primary">Beküldés</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <h2 class="mb-4">Vélemények</h2>
+
+    {% if reviews is empty %}
+        <p class="text-muted">Még nincs vélemény.</p>
+    {% else %}
+        {% for review in reviews %}
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <h5 class="card-title mb-0">{{ review.companyName }}</h5>
+                        <small class="text-muted">{{ review.createdAt|date('Y. m. d.') }}</small>
+                    </div>
+                    <div class="mb-2" style="color: #f5a623; font-size: 1.2rem; letter-spacing: 2px;">
+                        {% for i in 1..5 %}
+                            {% if i <= review.rating %}
+                                ★
+                            {% else %}
+                                <span style="color: #ddd;">★</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <p class="card-text text-secondary mb-2">
+                        {{ review.reviewText|length > 200
+                            ? review.reviewText|slice(0, 200) ~ '…'
+                            : review.reviewText }}
+                    </p>
+                    <a href="{{ path('review_show', {id: review.id}) }}" class="btn btn-outline-primary btn-sm">Részletek</a>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(reviews) }}
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
